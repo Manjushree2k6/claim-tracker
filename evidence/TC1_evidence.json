@@ -1,0 +1,355 @@
+{
+  "exported_at": "2026-10-18T07:22:32+00:00",
+  "input": {
+    "question": "Where is my father's claim?",
+    "claim_no": "CLM-1001",
+    "policy_no": "POL-5001",
+    "requester": "Priya Kumar (daughter, consent on file)",
+    "consent_checkbox": true,
+    "local_files": [
+      "final_invoice_CLM-1001.pdf",
+      "final_invoice_CLM-2002.pdf",
+      "final_invoice_CLM-4004.pdf",
+      "final_invoice_CLM-4005.pdf",
+      "holiday_photo.pdf"
+    ]
+  },
+  "expected": "Approved file is uploaded to the right claim (after human approval) and independently verified.",
+  "actual": "DOCS_MISSING; missing=['final_invoice']; upload=EXECUTED; verifier=VERIFIED; docs before=['discharge_summary_CLM-1001.pdf', 'id_proof_CLM-1001.pdf'] -> after=['discharge_summary_CLM-1001.pdf', 'id_proof_CLM-1001.pdf', 'final_invoice_CLM-1001.pdf']",
+  "evidence": [
+    {
+      "status_evidence": [
+        {
+          "source_id_or_url": "mock-portal://claims/CLM-1001",
+          "retrieved_at": "2026-10-18T07:22:32+00:00",
+          "field": "raw_status",
+          "value": "Documents Pending"
+        },
+        {
+          "source_id_or_url": "mock-portal://claims/CLM-1001",
+          "retrieved_at": "2026-10-18T07:22:32+00:00",
+          "field": "status_stamp",
+          "value": "STAMP-CLM-1001-001@2026-10-18T07:22:32+00:00"
+        },
+        {
+          "source_id_or_url": "mock-portal://claims/CLM-1001",
+          "retrieved_at": "2026-10-18T07:22:32+00:00",
+          "field": "required_docs",
+          "value": [
+            "discharge_summary",
+            "final_invoice",
+            "id_proof"
+          ]
+        },
+        {
+          "source_id_or_url": "mock-portal://claims/CLM-1001/documents",
+          "retrieved_at": "2026-10-18T07:22:32+00:00",
+          "field": "documents_on_file",
+          "value": [
+            "discharge_summary_CLM-1001.pdf",
+            "id_proof_CLM-1001.pdf"
+          ]
+        }
+      ]
+    },
+    {
+      "proposal": {
+        "proposal_id": "PROP-E6044C9A",
+        "file_name": "final_invoice_CLM-1001.pdf",
+        "sha256": "99debe0dd02e6b8d4006e37f3b2bd7e9034b10f670fcc13d9e578bc24702f5ac",
+        "destination_claim": "CLM-1001",
+        "change_summary": "Upload 'final_invoice_CLM-1001.pdf' as 'Final hospital invoice' to claim CLM-1001. The claim's document list goes from 2 to 3 files. File fingerprint (sha256): 99debe0dd02e6b8d... Once uploaded, the insurer holds this file and it cannot easily be removed.",
+        "doc_type": "final_invoice",
+        "idempotency_key": "CLM-1001:99debe0dd02e6b8d4006e37f3b2bd7e9034b10f670fcc13d9e578bc24702f5ac"
+      }
+    },
+    {
+      "approval_records": [
+        {
+          "id": 1,
+          "ts": "2026-10-18T07:22:32+00:00",
+          "proposal_id": "PROP-E6044C9A",
+          "approver": "human (UI)",
+          "decision": "APPROVED",
+          "file_sha256": "99debe0dd02e6b8d4006e37f3b2bd7e9034b10f670fcc13d9e578bc24702f5ac",
+          "destination_claim": "CLM-1001"
+        }
+      ]
+    },
+    {
+      "execution": {
+        "state": "EXECUTED",
+        "idempotency_key": "CLM-1001:99debe0dd02e6b8d4006e37f3b2bd7e9034b10f670fcc13d9e578bc24702f5ac",
+        "reason": "Uploaded.",
+        "attempts": 1,
+        "log": [
+          "pre-check: 2 documents on claim",
+          "attempt 1: upload OK"
+        ]
+      }
+    },
+    {
+      "verification": {
+        "state": "VERIFIED",
+        "docs_before": [
+          "discharge_summary_CLM-1001.pdf",
+          "id_proof_CLM-1001.pdf"
+        ],
+        "docs_after": [
+          "discharge_summary_CLM-1001.pdf",
+          "id_proof_CLM-1001.pdf",
+          "final_invoice_CLM-1001.pdf"
+        ],
+        "status_stamp": "STAMP-CLM-1001-002@2026-10-18T07:22:32+00:00",
+        "reason": "The approved file is on the claim exactly once and nothing else changed.",
+        "copies_found": 1
+      }
+    }
+  ],
+  "passed": true,
+  "explanation": "The human 'Approve' click is played by this test harness; in the app it is a real button. The portal is our synthetic mock, not the organiser's portal.",
+  "tc_id": "TC1",
+  "checks": [
+    {
+      "name": "state is OK",
+      "passed": true,
+      "detail": "OK"
+    },
+    {
+      "name": "status DOCS_MISSING read from portal",
+      "passed": true,
+      "detail": "DOCS_MISSING"
+    },
+    {
+      "name": "invoice listed as missing",
+      "passed": true,
+      "detail": "['final_invoice']"
+    },
+    {
+      "name": "exactly one proposal; right file; right claim",
+      "passed": true,
+      "detail": "final_invoice_CLM-1001.pdf -> CLM-1001"
+    },
+    {
+      "name": "decoy file for another claim was not proposed",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "NO upload happened before approval",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "execution EXECUTED",
+      "passed": true,
+      "detail": "EXECUTED"
+    },
+    {
+      "name": "approval record stored with file hash + destination claim",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "separate verifier: VERIFIED",
+      "passed": true,
+      "detail": "The approved file is on the claim exactly once and nothing else changed."
+    },
+    {
+      "name": "file now in document list exactly once",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "other claim untouched",
+      "passed": true,
+      "detail": "CLM-2002 has 2 documents"
+    }
+  ],
+  "trace": [
+    {
+      "step": "PLAN",
+      "tool": "parse_request",
+      "input": "Where is my father's claim?",
+      "output": {
+        "claim_no": "CLM-1001",
+        "policy_no": "POL-5001",
+        "requester": "Priya Kumar",
+        "parsed_by": "template"
+      },
+      "timestamp": "2026-10-18T07:22:32+00:00"
+    },
+    {
+      "step": "PLAN",
+      "tool": "validate_inputs",
+      "input": {
+        "claim_no": "CLM-1001",
+        "policy_no": "POL-5001",
+        "requester": "Priya Kumar"
+      },
+      "output": "inputs valid",
+      "timestamp": "2026-10-18T07:22:32+00:00"
+    },
+    {
+      "step": "TOOL CALL",
+      "tool": "check_consent",
+      "input": {
+        "requester": "Priya Kumar",
+        "consent_checkbox": true
+      },
+      "output": {
+        "authorized": true,
+        "rule": "R3-recorded-consent",
+        "reason": "A consent from the policy holder is on record for this requester."
+      },
+      "timestamp": "2026-10-18T07:22:32+00:00"
+    },
+    {
+      "step": "TOOL CALL",
+      "tool": "portal.get_claim",
+      "input": {
+        "claim_no": "CLM-1001"
+      },
+      "output": {
+        "raw_status": "Documents Pending",
+        "status_stamp": "STAMP-CLM-1001-001@2026-10-18T07:22:32+00:00"
+      },
+      "timestamp": "2026-10-18T07:22:32+00:00"
+    },
+    {
+      "step": "TOOL CALL",
+      "tool": "portal.list_documents",
+      "input": {
+        "claim_no": "CLM-1001"
+      },
+      "output": [
+        "discharge_summary_CLM-1001.pdf",
+        "id_proof_CLM-1001.pdf"
+      ],
+      "timestamp": "2026-10-18T07:22:32+00:00"
+    },
+    {
+      "step": "DECIDE",
+      "tool": "engine.map_status",
+      "input": "Documents Pending",
+      "output": "DOCS_MISSING",
+      "timestamp": "2026-10-18T07:22:32+00:00"
+    },
+    {
+      "step": "DECIDE",
+      "tool": "engine.compute_missing",
+      "input": {
+        "required": [
+          "discharge_summary",
+          "final_invoice",
+          "id_proof"
+        ],
+        "present": [
+          "discharge_summary",
+          "id_proof"
+        ]
+      },
+      "output": [
+        "final_invoice"
+      ],
+      "timestamp": "2026-10-18T07:22:32+00:00"
+    },
+    {
+      "step": "DECIDE",
+      "tool": "engine.candidate_files",
+      "input": [
+        "final_invoice"
+      ],
+      "output": {
+        "final_invoice": [
+          "final_invoice_CLM-1001.pdf"
+        ]
+      },
+      "timestamp": "2026-10-18T07:22:32+00:00"
+    },
+    {
+      "step": "TOOL CALL",
+      "tool": "propose_upload",
+      "input": {
+        "file_name": "final_invoice_CLM-1001.pdf"
+      },
+      "output": {
+        "proposal_id": "PROP-E6044C9A",
+        "destination": "CLM-1001"
+      },
+      "timestamp": "2026-10-18T07:22:32+00:00"
+    },
+    {
+      "step": "DECIDE",
+      "tool": "phrase_result",
+      "input": null,
+      "output": "template (no LLM configured)",
+      "timestamp": "2026-10-18T07:22:32+00:00"
+    }
+  ],
+  "portal_log": [
+    {
+      "id": 1,
+      "ts": "2026-10-18T07:22:32+00:00",
+      "action": "GET_CLAIM",
+      "claim_no": "CLM-1001",
+      "detail": ""
+    },
+    {
+      "id": 2,
+      "ts": "2026-10-18T07:22:32+00:00",
+      "action": "LIST_DOCS",
+      "claim_no": "CLM-1001",
+      "detail": ""
+    },
+    {
+      "id": 3,
+      "ts": "2026-10-18T07:22:32+00:00",
+      "action": "GET_CLAIM",
+      "claim_no": "CLM-1001",
+      "detail": ""
+    },
+    {
+      "id": 4,
+      "ts": "2026-10-18T07:22:32+00:00",
+      "action": "LIST_DOCS",
+      "claim_no": "CLM-1001",
+      "detail": ""
+    },
+    {
+      "id": 5,
+      "ts": "2026-10-18T07:22:32+00:00",
+      "action": "LIST_DOCS",
+      "claim_no": "CLM-1001",
+      "detail": ""
+    },
+    {
+      "id": 6,
+      "ts": "2026-10-18T07:22:32+00:00",
+      "action": "UPLOAD",
+      "claim_no": "CLM-1001",
+      "detail": "final_invoice_CLM-1001.pdf key=CLM-1001:99debe0dd02e6b8d4006e37f3b2bd7e9034b10f670fcc13d9e578bc24702f5ac -> OK"
+    },
+    {
+      "id": 7,
+      "ts": "2026-10-18T07:22:32+00:00",
+      "action": "LIST_DOCS",
+      "claim_no": "CLM-1001",
+      "detail": ""
+    },
+    {
+      "id": 8,
+      "ts": "2026-10-18T07:22:32+00:00",
+      "action": "GET_CLAIM",
+      "claim_no": "CLM-1001",
+      "detail": ""
+    },
+    {
+      "id": 9,
+      "ts": "2026-10-18T07:22:32+00:00",
+      "action": "LIST_DOCS",
+      "claim_no": "CLM-2002",
+      "detail": ""
+    }
+  ]
+}

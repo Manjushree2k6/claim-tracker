@@ -1,0 +1,200 @@
+{
+  "claims": [
+    {
+      "claim_no": "CLM-1001",
+      "raw_status": "Documents Pending",
+      "required_docs": [
+        "discharge_summary",
+        "final_invoice",
+        "id_proof"
+      ],
+      "present_docs": [
+        {
+          "file_name": "discharge_summary_CLM-1001.pdf",
+          "doc_type": "discharge_summary",
+          "sha256": "213b40507b76bf3a112194c593a8e4302031a8005b5f01e8bc955db4ff129510"
+        },
+        {
+          "file_name": "id_proof_CLM-1001.pdf",
+          "doc_type": "id_proof",
+          "sha256": "c4cc68cb4122af45626369fca8fb11923de90518bc08a147b57d0d85fbf10a84"
+        }
+      ]
+    },
+    {
+      "claim_no": "CLM-2002",
+      "raw_status": "Documents Pending",
+      "required_docs": [
+        "discharge_summary",
+        "final_invoice",
+        "id_proof"
+      ],
+      "present_docs": [
+        {
+          "file_name": "discharge_summary_CLM-2002.pdf",
+          "doc_type": "discharge_summary",
+          "sha256": "1fffda17dd89a016300fea84fde48e103091cc9b0f5f2eeca348474549a26a3b"
+        },
+        {
+          "file_name": "id_proof_CLM-2002.pdf",
+          "doc_type": "id_proof",
+          "sha256": "5c909738ee55a9ee66d7248dcb16c0368108c1ccf04ca3466c5720fafa2d056d"
+        }
+      ]
+    },
+    {
+      "claim_no": "CLM-3003",
+      "raw_status": "Under review",
+      "required_docs": [
+        "discharge_summary",
+        "final_invoice",
+        "id_proof"
+      ],
+      "present_docs": [
+        {
+          "file_name": "discharge_summary_CLM-3003.pdf",
+          "doc_type": "discharge_summary",
+          "sha256": "d2d05cc86d18b39eafa630e84a0990f9f5c164ee47a89cd9db666e1bdebcc582"
+        },
+        {
+          "file_name": "final_invoice_CLM-3003.pdf",
+          "doc_type": "final_invoice",
+          "sha256": "bc1487dcd9fd7e8b8f36417792fb3fe028f04ae78294179f9f3960b548e2ea53"
+        },
+        {
+          "file_name": "id_proof_CLM-3003.pdf",
+          "doc_type": "id_proof",
+          "sha256": "67d749c6172fcea7c23b248ce494e981b013309f74d0f9316cba3f2f8fc56470"
+        }
+      ]
+    },
+    {
+      "claim_no": "CLM-4004",
+      "raw_status": "Documents Pending",
+      "required_docs": [
+        "discharge_summary",
+        "final_invoice",
+        "id_proof"
+      ],
+      "present_docs": [
+        {
+          "file_name": "discharge_summary_CLM-4004.pdf",
+          "doc_type": "discharge_summary",
+          "sha256": "9ac929a638471e8e24afcaa926aa27ff85aa1141247e54d3a0678b11c9a186e1"
+        },
+        {
+          "file_name": "id_proof_CLM-4004.pdf",
+          "doc_type": "id_proof",
+          "sha256": "94919ff1554add014a4a24022d970417d21ca34b1f6e29306a7f745cf70e25c0"
+        }
+      ],
+      "fault": {
+        "mode": "timeout_after_commit",
+        "times": 1
+      }
+    },
+    {
+      "claim_no": "CLM-4005",
+      "raw_status": "Documents Pending",
+      "required_docs": [
+        "discharge_summary",
+        "final_invoice",
+        "id_proof"
+      ],
+      "present_docs": [
+        {
+          "file_name": "discharge_summary_CLM-4005.pdf",
+          "doc_type": "discharge_summary",
+          "sha256": "2536628dd391f9aec1a1f0b8fb4d829542139467bad1d1e1ad556d06216cb5d8"
+        },
+        {
+          "file_name": "id_proof_CLM-4005.pdf",
+          "doc_type": "id_proof",
+          "sha256": "3bd5a46919f8a56280e367cb7702c9804bcd0111edeffb8c7426ae281413d257"
+        }
+      ],
+      "fault": {
+        "mode": "timeout_before_commit",
+        "times": 1
+      }
+    },
+    {
+      "claim_no": "CLM-5006",
+      "raw_status": "Pending Reconciliation",
+      "required_docs": [
+        "discharge_summary",
+        "final_invoice",
+        "id_proof"
+      ],
+      "present_docs": [
+        {
+          "file_name": "discharge_summary_CLM-5006.pdf",
+          "doc_type": "discharge_summary",
+          "sha256": "788a730f8933918f037817a7f241349e689720727d5007e10ded38bb099d381a"
+        },
+        {
+          "file_name": "final_invoice_CLM-5006.pdf",
+          "doc_type": "final_invoice",
+          "sha256": "f13bfb034d8a0f6b53857251a92e16b0e7e3337a85ea8ceb4251882572ba0610"
+        },
+        {
+          "file_name": "id_proof_CLM-5006.pdf",
+          "doc_type": "id_proof",
+          "sha256": "4ef38b06e6f327fc9ae3214b100956b4e603b2297310c9cd5856e2877f964957"
+        }
+      ]
+    },
+    {
+      "claim_no": "CLM-6006",
+      "raw_status": "Approved",
+      "required_docs": [
+        "discharge_summary",
+        "final_invoice",
+        "id_proof"
+      ],
+      "present_docs": [
+        {
+          "file_name": "discharge_summary_CLM-6006.pdf",
+          "doc_type": "discharge_summary",
+          "sha256": "f251448e6adcbebdd5d0849f6943940566f932ac619fe536d289bdc958db9711"
+        },
+        {
+          "file_name": "final_invoice_CLM-6006.pdf",
+          "doc_type": "final_invoice",
+          "sha256": "1847884b017835b3858726aeb4414ce8d622d664317584a7f7cb0f5c0e6f0977"
+        },
+        {
+          "file_name": "id_proof_CLM-6006.pdf",
+          "doc_type": "id_proof",
+          "sha256": "cf82fec57fd525fc246a8f6b84f15838115f10ad8e7d6f8387af9d3f7166282d"
+        }
+      ]
+    },
+    {
+      "claim_no": "CLM-7007",
+      "raw_status": "Rejected",
+      "required_docs": [
+        "discharge_summary",
+        "final_invoice",
+        "id_proof"
+      ],
+      "present_docs": [
+        {
+          "file_name": "discharge_summary_CLM-7007.pdf",
+          "doc_type": "discharge_summary",
+          "sha256": "86f91c4f10d628e172aa92a61cdf8ce0cf8ebf3c9e0afd9d76347073f4ecacf6"
+        },
+        {
+          "file_name": "final_invoice_CLM-7007.pdf",
+          "doc_type": "final_invoice",
+          "sha256": "cadf37ddcd36b5b733ec9ba35023f2d670b78c77dc2b4b11964d1a803fc46b11"
+        },
+        {
+          "file_name": "id_proof_CLM-7007.pdf",
+          "doc_type": "id_proof",
+          "sha256": "5eae19c88bbb10a245a3f729ac6a18911645be53b6fa744333fadaf6538e8202"
+        }
+      ]
+    }
+  ]
+}

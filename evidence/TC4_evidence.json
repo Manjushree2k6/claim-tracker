@@ -1,0 +1,515 @@
+{
+  "exported_at": "2026-10-18T07:22:32+00:00",
+  "input": {
+    "claims": [
+      "CLM-4004 (portal times out AFTER storing the file)",
+      "CLM-4005 (portal times out BEFORE storing the file)"
+    ],
+    "requesters": [
+      "Divya Iyer",
+      "Karthik Menon"
+    ],
+    "consent_checkbox": true
+  },
+  "expected": "Upload times out: the document list is checked before any re-upload; exactly one copy ends up on the claim.",
+  "actual": "A (timeout after commit): SKIPPED_DUPLICATE, upload calls=1, verifier=VERIFIED, copies=1. B (timeout before commit): EXECUTED, attempts=2, verifier=VERIFIED, copies=1.",
+  "evidence": [
+    {
+      "A_execution": {
+        "state": "SKIPPED_DUPLICATE",
+        "idempotency_key": "CLM-4004:5ab5df391e6df57d457bbb4ef6376e75070b3f64ae659d32063f34dd699404b4",
+        "reason": "Upload timed out but the file had already arrived. Not re-uploaded.",
+        "attempts": 1,
+        "log": [
+          "pre-check: 2 documents on claim",
+          "attempt 1: TIMEOUT -> re-reading document list before any retry",
+          "file IS in the list -> do NOT upload again"
+        ]
+      },
+      "A_verification": {
+        "state": "VERIFIED",
+        "docs_before": [
+          "discharge_summary_CLM-4004.pdf",
+          "id_proof_CLM-4004.pdf"
+        ],
+        "docs_after": [
+          "discharge_summary_CLM-4004.pdf",
+          "id_proof_CLM-4004.pdf",
+          "final_invoice_CLM-4004.pdf"
+        ],
+        "status_stamp": "STAMP-CLM-4004-002@2026-10-18T07:22:32+00:00",
+        "reason": "The approved file is on the claim exactly once and nothing else changed.",
+        "copies_found": 1
+      },
+      "A_portal_upload_log": [
+        {
+          "id": 6,
+          "ts": "2026-10-18T07:22:32+00:00",
+          "action": "UPLOAD",
+          "claim_no": "CLM-4004",
+          "detail": "final_invoice_CLM-4004.pdf key=CLM-4004:5ab5df391e6df57d457bbb4ef6376e75070b3f64ae659d32063f34dd699404b4 -> STORED but response TIMED OUT"
+        }
+      ]
+    },
+    {
+      "B_execution": {
+        "state": "EXECUTED",
+        "idempotency_key": "CLM-4005:e548781416e552851c01284736a8364b7786d7afa28f42121cfba69cf699153f",
+        "reason": "Uploaded.",
+        "attempts": 2,
+        "log": [
+          "pre-check: 2 documents on claim",
+          "attempt 1: TIMEOUT -> re-reading document list before any retry",
+          "file NOT in the list -> retry once, same key",
+          "attempt 2: upload OK"
+        ]
+      },
+      "B_verification": {
+        "state": "VERIFIED",
+        "docs_before": [
+          "discharge_summary_CLM-4005.pdf",
+          "id_proof_CLM-4005.pdf"
+        ],
+        "docs_after": [
+          "discharge_summary_CLM-4005.pdf",
+          "id_proof_CLM-4005.pdf",
+          "final_invoice_CLM-4005.pdf"
+        ],
+        "status_stamp": "STAMP-CLM-4005-002@2026-10-18T07:22:32+00:00",
+        "reason": "The approved file is on the claim exactly once and nothing else changed.",
+        "copies_found": 1
+      },
+      "B_portal_upload_log": [
+        {
+          "id": 15,
+          "ts": "2026-10-18T07:22:32+00:00",
+          "action": "UPLOAD",
+          "claim_no": "CLM-4005",
+          "detail": "final_invoice_CLM-4005.pdf key=CLM-4005:e548781416e552851c01284736a8364b7786d7afa28f42121cfba69cf699153f -> TIMEOUT (not stored)"
+        },
+        {
+          "id": 17,
+          "ts": "2026-10-18T07:22:32+00:00",
+          "action": "UPLOAD",
+          "claim_no": "CLM-4005",
+          "detail": "final_invoice_CLM-4005.pdf key=CLM-4005:e548781416e552851c01284736a8364b7786d7afa28f42121cfba69cf699153f -> OK"
+        }
+      ]
+    }
+  ],
+  "passed": true,
+  "explanation": "Timeouts are INJECTED by the mock portal (fault mode). How the organiser's portal behaves on timeout is still to be confirmed with the organiser.",
+  "tc_id": "TC4",
+  "checks": [
+    {
+      "name": "A: timeout detected, list re-read, file found -> SKIPPED_DUPLICATE",
+      "passed": true,
+      "detail": "SKIPPED_DUPLICATE"
+    },
+    {
+      "name": "A: portal received exactly ONE upload call (no re-upload)",
+      "passed": true,
+      "detail": "1 calls"
+    },
+    {
+      "name": "A: log shows the list was re-read before any retry",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "A: verifier VERIFIED, exactly one copy",
+      "passed": true,
+      "detail": "The approved file is on the claim exactly once and nothing else changed."
+    },
+    {
+      "name": "B: list re-read, file absent -> retried once with the same key -> EXECUTED",
+      "passed": true,
+      "detail": "EXECUTED, attempts=2"
+    },
+    {
+      "name": "B: both portal calls used the same idempotency key",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "B: verifier VERIFIED, exactly one copy",
+      "passed": true,
+      "detail": ""
+    }
+  ],
+  "trace": [
+    {
+      "step": "PLAN",
+      "tool": "parse_request",
+      "input": "What is missing?",
+      "output": {
+        "claim_no": "CLM-4004",
+        "policy_no": "POL-5004",
+        "requester": "Divya Iyer",
+        "parsed_by": "template"
+      },
+      "timestamp": "2026-10-18T07:22:32+00:00"
+    },
+    {
+      "step": "PLAN",
+      "tool": "validate_inputs",
+      "input": {
+        "claim_no": "CLM-4004",
+        "policy_no": "POL-5004",
+        "requester": "Divya Iyer"
+      },
+      "output": "inputs valid",
+      "timestamp": "2026-10-18T07:22:32+00:00"
+    },
+    {
+      "step": "TOOL CALL",
+      "tool": "check_consent",
+      "input": {
+        "requester": "Divya Iyer",
+        "consent_checkbox": true
+      },
+      "output": {
+        "authorized": true,
+        "rule": "R3-recorded-consent",
+        "reason": "A consent from the policy holder is on record for this requester."
+      },
+      "timestamp": "2026-10-18T07:22:32+00:00"
+    },
+    {
+      "step": "TOOL CALL",
+      "tool": "portal.get_claim",
+      "input": {
+        "claim_no": "CLM-4004"
+      },
+      "output": {
+        "raw_status": "Documents Pending",
+        "status_stamp": "STAMP-CLM-4004-001@2026-10-18T07:22:32+00:00"
+      },
+      "timestamp": "2026-10-18T07:22:32+00:00"
+    },
+    {
+      "step": "TOOL CALL",
+      "tool": "portal.list_documents",
+      "input": {
+        "claim_no": "CLM-4004"
+      },
+      "output": [
+        "discharge_summary_CLM-4004.pdf",
+        "id_proof_CLM-4004.pdf"
+      ],
+      "timestamp": "2026-10-18T07:22:32+00:00"
+    },
+    {
+      "step": "DECIDE",
+      "tool": "engine.map_status",
+      "input": "Documents Pending",
+      "output": "DOCS_MISSING",
+      "timestamp": "2026-10-18T07:22:32+00:00"
+    },
+    {
+      "step": "DECIDE",
+      "tool": "engine.compute_missing",
+      "input": {
+        "required": [
+          "discharge_summary",
+          "final_invoice",
+          "id_proof"
+        ],
+        "present": [
+          "discharge_summary",
+          "id_proof"
+        ]
+      },
+      "output": [
+        "final_invoice"
+      ],
+      "timestamp": "2026-10-18T07:22:32+00:00"
+    },
+    {
+      "step": "DECIDE",
+      "tool": "engine.candidate_files",
+      "input": [
+        "final_invoice"
+      ],
+      "output": {
+        "final_invoice": [
+          "final_invoice_CLM-4004.pdf"
+        ]
+      },
+      "timestamp": "2026-10-18T07:22:32+00:00"
+    },
+    {
+      "step": "TOOL CALL",
+      "tool": "propose_upload",
+      "input": {
+        "file_name": "final_invoice_CLM-4004.pdf"
+      },
+      "output": {
+        "proposal_id": "PROP-62F803CD",
+        "destination": "CLM-4004"
+      },
+      "timestamp": "2026-10-18T07:22:32+00:00"
+    },
+    {
+      "step": "DECIDE",
+      "tool": "phrase_result",
+      "input": null,
+      "output": "template (no LLM configured)",
+      "timestamp": "2026-10-18T07:22:32+00:00"
+    },
+    {
+      "step": "PLAN",
+      "tool": "parse_request",
+      "input": "What is missing?",
+      "output": {
+        "claim_no": "CLM-4005",
+        "policy_no": "POL-5005",
+        "requester": "Karthik Menon",
+        "parsed_by": "template"
+      },
+      "timestamp": "2026-10-18T07:22:32+00:00"
+    },
+    {
+      "step": "PLAN",
+      "tool": "validate_inputs",
+      "input": {
+        "claim_no": "CLM-4005",
+        "policy_no": "POL-5005",
+        "requester": "Karthik Menon"
+      },
+      "output": "inputs valid",
+      "timestamp": "2026-10-18T07:22:32+00:00"
+    },
+    {
+      "step": "TOOL CALL",
+      "tool": "check_consent",
+      "input": {
+        "requester": "Karthik Menon",
+        "consent_checkbox": true
+      },
+      "output": {
+        "authorized": true,
+        "rule": "R3-recorded-consent",
+        "reason": "A consent from the policy holder is on record for this requester."
+      },
+      "timestamp": "2026-10-18T07:22:32+00:00"
+    },
+    {
+      "step": "TOOL CALL",
+      "tool": "portal.get_claim",
+      "input": {
+        "claim_no": "CLM-4005"
+      },
+      "output": {
+        "raw_status": "Documents Pending",
+        "status_stamp": "STAMP-CLM-4005-001@2026-10-18T07:22:32+00:00"
+      },
+      "timestamp": "2026-10-18T07:22:32+00:00"
+    },
+    {
+      "step": "TOOL CALL",
+      "tool": "portal.list_documents",
+      "input": {
+        "claim_no": "CLM-4005"
+      },
+      "output": [
+        "discharge_summary_CLM-4005.pdf",
+        "id_proof_CLM-4005.pdf"
+      ],
+      "timestamp": "2026-10-18T07:22:32+00:00"
+    },
+    {
+      "step": "DECIDE",
+      "tool": "engine.map_status",
+      "input": "Documents Pending",
+      "output": "DOCS_MISSING",
+      "timestamp": "2026-10-18T07:22:32+00:00"
+    },
+    {
+      "step": "DECIDE",
+      "tool": "engine.compute_missing",
+      "input": {
+        "required": [
+          "discharge_summary",
+          "final_invoice",
+          "id_proof"
+        ],
+        "present": [
+          "discharge_summary",
+          "id_proof"
+        ]
+      },
+      "output": [
+        "final_invoice"
+      ],
+      "timestamp": "2026-10-18T07:22:32+00:00"
+    },
+    {
+      "step": "DECIDE",
+      "tool": "engine.candidate_files",
+      "input": [
+        "final_invoice"
+      ],
+      "output": {
+        "final_invoice": [
+          "final_invoice_CLM-4005.pdf"
+        ]
+      },
+      "timestamp": "2026-10-18T07:22:32+00:00"
+    },
+    {
+      "step": "TOOL CALL",
+      "tool": "propose_upload",
+      "input": {
+        "file_name": "final_invoice_CLM-4005.pdf"
+      },
+      "output": {
+        "proposal_id": "PROP-894D9D3C",
+        "destination": "CLM-4005"
+      },
+      "timestamp": "2026-10-18T07:22:32+00:00"
+    },
+    {
+      "step": "DECIDE",
+      "tool": "phrase_result",
+      "input": null,
+      "output": "template (no LLM configured)",
+      "timestamp": "2026-10-18T07:22:32+00:00"
+    }
+  ],
+  "portal_log": [
+    {
+      "id": 1,
+      "ts": "2026-10-18T07:22:32+00:00",
+      "action": "GET_CLAIM",
+      "claim_no": "CLM-4004",
+      "detail": ""
+    },
+    {
+      "id": 2,
+      "ts": "2026-10-18T07:22:32+00:00",
+      "action": "LIST_DOCS",
+      "claim_no": "CLM-4004",
+      "detail": ""
+    },
+    {
+      "id": 3,
+      "ts": "2026-10-18T07:22:32+00:00",
+      "action": "GET_CLAIM",
+      "claim_no": "CLM-4004",
+      "detail": ""
+    },
+    {
+      "id": 4,
+      "ts": "2026-10-18T07:22:32+00:00",
+      "action": "LIST_DOCS",
+      "claim_no": "CLM-4004",
+      "detail": ""
+    },
+    {
+      "id": 5,
+      "ts": "2026-10-18T07:22:32+00:00",
+      "action": "LIST_DOCS",
+      "claim_no": "CLM-4004",
+      "detail": ""
+    },
+    {
+      "id": 6,
+      "ts": "2026-10-18T07:22:32+00:00",
+      "action": "UPLOAD",
+      "claim_no": "CLM-4004",
+      "detail": "final_invoice_CLM-4004.pdf key=CLM-4004:5ab5df391e6df57d457bbb4ef6376e75070b3f64ae659d32063f34dd699404b4 -> STORED but response TIMED OUT"
+    },
+    {
+      "id": 7,
+      "ts": "2026-10-18T07:22:32+00:00",
+      "action": "LIST_DOCS",
+      "claim_no": "CLM-4004",
+      "detail": ""
+    },
+    {
+      "id": 8,
+      "ts": "2026-10-18T07:22:32+00:00",
+      "action": "LIST_DOCS",
+      "claim_no": "CLM-4004",
+      "detail": ""
+    },
+    {
+      "id": 9,
+      "ts": "2026-10-18T07:22:32+00:00",
+      "action": "GET_CLAIM",
+      "claim_no": "CLM-4004",
+      "detail": ""
+    },
+    {
+      "id": 10,
+      "ts": "2026-10-18T07:22:32+00:00",
+      "action": "GET_CLAIM",
+      "claim_no": "CLM-4005",
+      "detail": ""
+    },
+    {
+      "id": 11,
+      "ts": "2026-10-18T07:22:32+00:00",
+      "action": "LIST_DOCS",
+      "claim_no": "CLM-4005",
+      "detail": ""
+    },
+    {
+      "id": 12,
+      "ts": "2026-10-18T07:22:32+00:00",
+      "action": "GET_CLAIM",
+      "claim_no": "CLM-4005",
+      "detail": ""
+    },
+    {
+      "id": 13,
+      "ts": "2026-10-18T07:22:32+00:00",
+      "action": "LIST_DOCS",
+      "claim_no": "CLM-4005",
+      "detail": ""
+    },
+    {
+      "id": 14,
+      "ts": "2026-10-18T07:22:32+00:00",
+      "action": "LIST_DOCS",
+      "claim_no": "CLM-4005",
+      "detail": ""
+    },
+    {
+      "id": 15,
+      "ts": "2026-10-18T07:22:32+00:00",
+      "action": "UPLOAD",
+      "claim_no": "CLM-4005",
+      "detail": "final_invoice_CLM-4005.pdf key=CLM-4005:e548781416e552851c01284736a8364b7786d7afa28f42121cfba69cf699153f -> TIMEOUT (not stored)"
+    },
+    {
+      "id": 16,
+      "ts": "2026-10-18T07:22:32+00:00",
+      "action": "LIST_DOCS",
+      "claim_no": "CLM-4005",
+      "detail": ""
+    },
+    {
+      "id": 17,
+      "ts": "2026-10-18T07:22:32+00:00",
+      "action": "UPLOAD",
+      "claim_no": "CLM-4005",
+      "detail": "final_invoice_CLM-4005.pdf key=CLM-4005:e548781416e552851c01284736a8364b7786d7afa28f42121cfba69cf699153f -> OK"
+    },
+    {
+      "id": 18,
+      "ts": "2026-10-18T07:22:32+00:00",
+      "action": "LIST_DOCS",
+      "claim_no": "CLM-4005",
+      "detail": ""
+    },
+    {
+      "id": 19,
+      "ts": "2026-10-18T07:22:32+00:00",
+      "action": "GET_CLAIM",
+      "claim_no": "CLM-4005",
+      "detail": ""
+    }
+  ]
+}

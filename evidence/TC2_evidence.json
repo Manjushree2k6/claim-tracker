@@ -1,0 +1,262 @@
+{
+  "exported_at": "2026-10-18T07:22:32+00:00",
+  "input": {
+    "question": "Where is my aunt's claim?",
+    "claim_no": "CLM-2002",
+    "policy_no": "POL-5002",
+    "requester": "Anil Rao (relative, NOT the holder)",
+    "consent_checkbox": true
+  },
+  "expected": "Another family member's claim needs that person's consent: no portal action before consent.",
+  "actual": "Before consent: CONSENT_REQUIRED (rule R3-no-consent), 0 portal actions. After recorded consent: OK / DOCS_MISSING.",
+  "evidence": [
+    {
+      "blocked_result": {
+        "state": "CONSENT_REQUIRED",
+        "status": "UNKNOWN",
+        "missing_docs": [],
+        "next_step": "Ask the policy holder to give consent for you, then try again.",
+        "reason": "You ticked the consent box, but no consent from the policy holder is recorded for you on this claim. Being a family member is not enough.",
+        "evidence": [],
+        "trace": [
+          {
+            "step": "PLAN",
+            "tool": "validate_inputs",
+            "input": {
+              "claim_no": "CLM-2002",
+              "policy_no": "POL-5002",
+              "requester": "Anil Rao"
+            },
+            "output": "inputs valid",
+            "timestamp": "2026-10-18T07:22:32+00:00"
+          },
+          {
+            "step": "TOOL CALL",
+            "tool": "check_consent",
+            "input": {
+              "requester": "Anil Rao",
+              "consent_checkbox": true
+            },
+            "output": {
+              "authorized": false,
+              "rule": "R3-no-consent",
+              "reason": "You ticked the consent box, but no consent from the policy holder is recorded for you on this claim. Being a family member is not enough."
+            },
+            "timestamp": "2026-10-18T07:22:32+00:00"
+          },
+          {
+            "step": "DECIDE",
+            "tool": "engine",
+            "input": "R3-no-consent",
+            "output": "stop before any portal action",
+            "timestamp": "2026-10-18T07:22:32+00:00"
+          }
+        ],
+        "rule_fired": "R3-no-consent",
+        "run_id": 1,
+        "claim_no": "CLM-2002",
+        "raw_status": null,
+        "status_stamp": null,
+        "present_docs": []
+      }
+    },
+    {
+      "portal_actions_before_consent": 0
+    },
+    {
+      "after_consent_status": "DOCS_MISSING"
+    }
+  ],
+  "passed": true,
+  "explanation": "The holder's consent is simulated by a button/function in this demo; no real consent request is sent to anyone.",
+  "tc_id": "TC2",
+  "checks": [
+    {
+      "name": "state CONSENT_REQUIRED",
+      "passed": true,
+      "detail": "CONSENT_REQUIRED"
+    },
+    {
+      "name": "ticking the checkbox alone did not grant access",
+      "passed": true,
+      "detail": "R3-no-consent"
+    },
+    {
+      "name": "ZERO portal actions logged",
+      "passed": true,
+      "detail": "0 portal actions"
+    },
+    {
+      "name": "upload proposal blocked without consent",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "still zero portal actions after the blocked attempt",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "after the holder's (simulated) consent the claim can be read",
+      "passed": true,
+      "detail": "OK"
+    }
+  ],
+  "trace": [
+    {
+      "step": "PLAN",
+      "tool": "parse_request",
+      "input": "Where is my aunt's claim?",
+      "output": {
+        "claim_no": "CLM-2002",
+        "policy_no": "POL-5002",
+        "requester": "Anil Rao",
+        "parsed_by": "template"
+      },
+      "timestamp": "2026-10-18T07:22:32+00:00"
+    },
+    {
+      "step": "PLAN",
+      "tool": "validate_inputs",
+      "input": {
+        "claim_no": "CLM-2002",
+        "policy_no": "POL-5002",
+        "requester": "Anil Rao"
+      },
+      "output": "inputs valid",
+      "timestamp": "2026-10-18T07:22:32+00:00"
+    },
+    {
+      "step": "TOOL CALL",
+      "tool": "check_consent",
+      "input": {
+        "requester": "Anil Rao",
+        "consent_checkbox": true
+      },
+      "output": {
+        "authorized": false,
+        "rule": "R3-no-consent",
+        "reason": "You ticked the consent box, but no consent from the policy holder is recorded for you on this claim. Being a family member is not enough."
+      },
+      "timestamp": "2026-10-18T07:22:32+00:00"
+    },
+    {
+      "step": "DECIDE",
+      "tool": "engine",
+      "input": "R3-no-consent",
+      "output": "stop before any portal action",
+      "timestamp": "2026-10-18T07:22:32+00:00"
+    },
+    {
+      "step": "DECIDE",
+      "tool": "phrase_result",
+      "input": null,
+      "output": "template (no LLM configured)",
+      "timestamp": "2026-10-18T07:22:32+00:00"
+    },
+    {
+      "step": "PLAN",
+      "tool": "validate_inputs",
+      "input": {
+        "claim_no": "CLM-2002",
+        "policy_no": "POL-5002",
+        "requester": "Anil Rao"
+      },
+      "output": "inputs valid",
+      "timestamp": "2026-10-18T07:22:32+00:00"
+    },
+    {
+      "step": "TOOL CALL",
+      "tool": "check_consent",
+      "input": {
+        "requester": "Anil Rao",
+        "consent_checkbox": true
+      },
+      "output": {
+        "authorized": true,
+        "rule": "R3-recorded-consent",
+        "reason": "A consent from the policy holder is on record for this requester."
+      },
+      "timestamp": "2026-10-18T07:22:32+00:00"
+    },
+    {
+      "step": "TOOL CALL",
+      "tool": "portal.get_claim",
+      "input": {
+        "claim_no": "CLM-2002"
+      },
+      "output": {
+        "raw_status": "Documents Pending",
+        "status_stamp": "STAMP-CLM-2002-001@2026-10-18T07:22:32+00:00"
+      },
+      "timestamp": "2026-10-18T07:22:32+00:00"
+    },
+    {
+      "step": "TOOL CALL",
+      "tool": "portal.list_documents",
+      "input": {
+        "claim_no": "CLM-2002"
+      },
+      "output": [
+        "discharge_summary_CLM-2002.pdf",
+        "id_proof_CLM-2002.pdf"
+      ],
+      "timestamp": "2026-10-18T07:22:32+00:00"
+    },
+    {
+      "step": "DECIDE",
+      "tool": "engine.map_status",
+      "input": "Documents Pending",
+      "output": "DOCS_MISSING",
+      "timestamp": "2026-10-18T07:22:32+00:00"
+    },
+    {
+      "step": "DECIDE",
+      "tool": "engine.compute_missing",
+      "input": {
+        "required": [
+          "discharge_summary",
+          "final_invoice",
+          "id_proof"
+        ],
+        "present": [
+          "discharge_summary",
+          "id_proof"
+        ]
+      },
+      "output": [
+        "final_invoice"
+      ],
+      "timestamp": "2026-10-18T07:22:32+00:00"
+    },
+    {
+      "step": "DECIDE",
+      "tool": "engine.candidate_files",
+      "input": [
+        "final_invoice"
+      ],
+      "output": {
+        "final_invoice": [
+          "final_invoice_CLM-2002.pdf"
+        ]
+      },
+      "timestamp": "2026-10-18T07:22:32+00:00"
+    }
+  ],
+  "portal_log": [
+    {
+      "id": 1,
+      "ts": "2026-10-18T07:22:32+00:00",
+      "action": "GET_CLAIM",
+      "claim_no": "CLM-2002",
+      "detail": ""
+    },
+    {
+      "id": 2,
+      "ts": "2026-10-18T07:22:32+00:00",
+      "action": "LIST_DOCS",
+      "claim_no": "CLM-2002",
+      "detail": ""
+    }
+  ]
+}

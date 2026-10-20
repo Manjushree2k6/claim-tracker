@@ -1,0 +1,219 @@
+{
+  "exported_at": "2026-10-18T07:22:32+00:00",
+  "input": {
+    "question": "Has my mother's claim been approved yet?",
+    "claim_no": "CLM-3003",
+    "policy_no": "POL-5003",
+    "requester": "Rohan Nair (son, consent on file)",
+    "consent_checkbox": true
+  },
+  "expected": "'Under review' is never reported as approved.",
+  "actual": "raw='Under review' -> UNDER_REVIEW. Message shown: \"Your claim is under review. The insurer has not made a decision yet.\" Next step: \"Nothing to do right now. The insurer is still reviewing and has not made a decision. Check again later.\"",
+  "evidence": [
+    {
+      "status_evidence": [
+        {
+          "source_id_or_url": "mock-portal://claims/CLM-3003",
+          "retrieved_at": "2026-10-18T07:22:32+00:00",
+          "field": "raw_status",
+          "value": "Under review"
+        },
+        {
+          "source_id_or_url": "mock-portal://claims/CLM-3003",
+          "retrieved_at": "2026-10-18T07:22:32+00:00",
+          "field": "status_stamp",
+          "value": "STAMP-CLM-3003-001@2026-10-18T07:22:32+00:00"
+        },
+        {
+          "source_id_or_url": "mock-portal://claims/CLM-3003",
+          "retrieved_at": "2026-10-18T07:22:32+00:00",
+          "field": "required_docs",
+          "value": [
+            "discharge_summary",
+            "final_invoice",
+            "id_proof"
+          ]
+        },
+        {
+          "source_id_or_url": "mock-portal://claims/CLM-3003/documents",
+          "retrieved_at": "2026-10-18T07:22:32+00:00",
+          "field": "documents_on_file",
+          "value": [
+            "discharge_summary_CLM-3003.pdf",
+            "final_invoice_CLM-3003.pdf",
+            "id_proof_CLM-3003.pdf"
+          ]
+        }
+      ]
+    },
+    {
+      "message_shown": "Your claim is under review. The insurer has not made a decision yet."
+    },
+    {
+      "rogue_llm_guard": {
+        "candidate": "Good news! Your claim has been approved.",
+        "used": "Your claim is under review. The insurer has not made a decision yet.",
+        "note": "template (LLM message rejected: approval-like wording used for status UNDER_REVIEW)"
+      }
+    }
+  ],
+  "passed": true,
+  "explanation": "The rogue-LLM check uses a scripted fake model, not a live API call.",
+  "tc_id": "TC3",
+  "checks": [
+    {
+      "name": "portal raw status read",
+      "passed": true,
+      "detail": "Under review"
+    },
+    {
+      "name": "mapped to UNDER_REVIEW",
+      "passed": true,
+      "detail": "UNDER_REVIEW"
+    },
+    {
+      "name": "state OK",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "no approval wording in message / next step / reason",
+      "passed": true,
+      "detail": "Your claim is under review. The insurer has not made a decision yet."
+    },
+    {
+      "name": "a rogue LLM message saying 'approved' is rejected and replaced by the template",
+      "passed": true,
+      "detail": "template (LLM message rejected: approval-like wording used for status UNDER_REVIEW)"
+    },
+    {
+      "name": "a harmless LLM message is accepted",
+      "passed": true,
+      "detail": "LLM message passed validation"
+    },
+    {
+      "name": "'under review' text itself is not treated as approval",
+      "passed": true,
+      "detail": ""
+    }
+  ],
+  "trace": [
+    {
+      "step": "PLAN",
+      "tool": "parse_request",
+      "input": "Has my mother's claim been approved yet?",
+      "output": {
+        "claim_no": "CLM-3003",
+        "policy_no": "POL-5003",
+        "requester": "Rohan Nair",
+        "parsed_by": "template"
+      },
+      "timestamp": "2026-10-18T07:22:32+00:00"
+    },
+    {
+      "step": "PLAN",
+      "tool": "validate_inputs",
+      "input": {
+        "claim_no": "CLM-3003",
+        "policy_no": "POL-5003",
+        "requester": "Rohan Nair"
+      },
+      "output": "inputs valid",
+      "timestamp": "2026-10-18T07:22:32+00:00"
+    },
+    {
+      "step": "TOOL CALL",
+      "tool": "check_consent",
+      "input": {
+        "requester": "Rohan Nair",
+        "consent_checkbox": true
+      },
+      "output": {
+        "authorized": true,
+        "rule": "R3-recorded-consent",
+        "reason": "A consent from the policy holder is on record for this requester."
+      },
+      "timestamp": "2026-10-18T07:22:32+00:00"
+    },
+    {
+      "step": "TOOL CALL",
+      "tool": "portal.get_claim",
+      "input": {
+        "claim_no": "CLM-3003"
+      },
+      "output": {
+        "raw_status": "Under review",
+        "status_stamp": "STAMP-CLM-3003-001@2026-10-18T07:22:32+00:00"
+      },
+      "timestamp": "2026-10-18T07:22:32+00:00"
+    },
+    {
+      "step": "TOOL CALL",
+      "tool": "portal.list_documents",
+      "input": {
+        "claim_no": "CLM-3003"
+      },
+      "output": [
+        "discharge_summary_CLM-3003.pdf",
+        "final_invoice_CLM-3003.pdf",
+        "id_proof_CLM-3003.pdf"
+      ],
+      "timestamp": "2026-10-18T07:22:32+00:00"
+    },
+    {
+      "step": "DECIDE",
+      "tool": "engine.map_status",
+      "input": "Under review",
+      "output": "UNDER_REVIEW",
+      "timestamp": "2026-10-18T07:22:32+00:00"
+    },
+    {
+      "step": "DECIDE",
+      "tool": "engine.compute_missing",
+      "input": {
+        "required": [
+          "discharge_summary",
+          "final_invoice",
+          "id_proof"
+        ],
+        "present": [
+          "discharge_summary",
+          "final_invoice",
+          "id_proof"
+        ]
+      },
+      "output": [],
+      "timestamp": "2026-10-18T07:22:32+00:00"
+    },
+    {
+      "step": "DECIDE",
+      "tool": "engine.candidate_files",
+      "input": [],
+      "output": {},
+      "timestamp": "2026-10-18T07:22:32+00:00"
+    },
+    {
+      "step": "DECIDE",
+      "tool": "phrase_result",
+      "input": null,
+      "output": "template (no LLM configured)",
+      "timestamp": "2026-10-18T07:22:32+00:00"
+    }
+  ],
+  "portal_log": [
+    {
+      "id": 1,
+      "ts": "2026-10-18T07:22:32+00:00",
+      "action": "GET_CLAIM",
+      "claim_no": "CLM-3003",
+      "detail": ""
+    },
+    {
+      "id": 2,
+      "ts": "2026-10-18T07:22:32+00:00",
+      "action": "LIST_DOCS",
+      "claim_no": "CLM-3003",
+      "detail": ""
+    }
+  ]
+}
