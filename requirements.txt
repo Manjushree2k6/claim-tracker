@@ -1,5 +1,6 @@
 streamlit>=1.40,<1.50
 pydantic>=2.5
+requests>=2.31
 # optional: enables the AI assistant path (the app works fully without it)
 anthropic>=0.40
 # dev only: pytest -q   (or: python run_tests.py)

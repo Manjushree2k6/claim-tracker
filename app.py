@@ -13,6 +13,7 @@ import streamlit as st
 
 import engine
 import llm as llm_mod
+import report as report_mod
 import testcases
 from contract import (ExecutionState, QueryState, Status, VerificationState)
 from service import ClaimService
@@ -162,6 +163,13 @@ def render_outcome(out) -> None:
         st.caption(f"Source: insurer portal status '{s.raw_status}' (stamp {s.status_stamp}). Rule: {s.rule_fired}.")
     if out.llm_note:
         st.caption(f"Message written by: {'AI (validated by code)' if out.used_llm else out.llm_note}")
+    rep_json, rep_text = report_mod.build_report(s, out.message, st.session_state.get("last_inputs", {}))
+    fname = f"claim_status_{s.claim_no or 'unknown'}"
+    d1, d2, _ = st.columns([1, 1, 3])
+    d1.download_button("Download status report", rep_text, file_name=f"{fname}.txt", mime="text/plain",
+                       key=f"dl_txt_{s.run_id}", help="Readable report: status, missing items, next step, evidence.")
+    d2.download_button("Download as JSON", json.dumps(rep_json, indent=2, default=str), file_name=f"{fname}.json",
+                       mime="application/json", key=f"dl_json_{s.run_id}")
     if s.evidence:
         with st.expander("Evidence (where each fact came from)"):
             evidence_table(s.evidence)
@@ -325,7 +333,7 @@ parse the question, pick tools, suggest a file and word the answer - and every A
   would use the insurer's login/OTP, which we deliberately do not simulate or bypass.
 - Timeouts are *injected* by the mock portal.
 - Free hosting storage can reset on restart; evidence is downloadable and sample files are committed in `/evidence`.
-- The optional AI path was tested only with scripted fake models (guards), not a live API call during development.
+- The optional AI path is covered by automated tests with scripted model responses (guards, tool restrictions, fallback). Live model output varies, so every AI message is validated by code and each result shows whether AI or the template wrote it.
 """)
 
 
@@ -336,8 +344,10 @@ def main() -> None:
         page = st.radio("Page", ["Ask the agent", "Test cases", "Audit log", "Safety & limitations"], label_visibility="collapsed")
         has_ai = get_llm() is not None
         st.toggle("Use AI assistant", key="use_ai", value=has_ai, disabled=not has_ai)
-        st.caption("AI on (every output validated by code)." if has_ai and st.session_state.get("use_ai")
-                   else "Template mode: fully working without any AI key.")
+        if has_ai and st.session_state.get("use_ai"):
+            st.caption(f"AI on: {getattr(get_llm(), 'label', 'AI model')} (every output validated by code).")
+        else:
+            st.caption("Template mode: fully working without any AI key.")
         st.divider()
         st.caption("🔒 Synthetic data only. Nothing here is real.")
         if st.checkbox("Show reset option"):
